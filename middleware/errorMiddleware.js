@@ -26,7 +26,7 @@ const errorHandler = (err, req, res, next) => {
     statusCode = 404;
     message = 'resource not found';
   }
-}
+
 
 // validationerror - missing required field or data
 
@@ -44,7 +44,9 @@ if (err.code === 11000) {
   message = `That ${field} is already in use`;
 }
 
-// send final error
-res.status(statusCode).json({ message });
+  // send final error
+  res.status(statusCode).json({ message });
+}
+
 
 module.exports = { notFound, errorHandler };

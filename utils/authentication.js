@@ -53,7 +53,7 @@ function verifyUserAccess(req, res, next) {
 
 // check if user ownes challenge
 async function confirmChallengeOwner(challengeId, req, res) {
-  const challenge = await Challenge.findbyId(challengeId);
+  const challenge = await Challenge.findById(challengeId);
 
   // if user doesn't own project return null and send error response
   if (!challenge) {
@@ -77,10 +77,12 @@ async function confirmPostOwner(postId, req, res) {
   //
   if (!post) {
     res.status(404).json({ message: 'Post not found' });
+    return null;
   }
 
   if (!post.challengeId) {
     res.status(400).json({ message: 'This post has no parent and no associated challenge.' })
+    return null;
   }
 
   // if user doesn't own return null and send errr
@@ -88,6 +90,7 @@ async function confirmPostOwner(postId, req, res) {
     res.status(403).json({
       message: 'You are not allowed to access this post.'
     });
+    return null;
 
   }
 
