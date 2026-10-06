@@ -1,6 +1,7 @@
 // import mongoose and bcrypt
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { report } = require('../routes/api/userRoutes');
 
 // define schema with fields username, email, password,
 const userSchema = new mongoose.Schema({
@@ -32,15 +33,13 @@ const userSchema = new mongoose.Schema({
 );
 
 //pre-save hook to hashpassword
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) {
-  
-    return next();
-  }
+userSchema.pre('save', async function() {
+  if (!this.isModified('password')) 
+    return;
 
   const saltRounds = 10; //
   this.password = await bcrypt.hash(this.password, saltRounds);
-  next();
+  
 
 });
 
@@ -48,6 +47,15 @@ userSchema.pre('save', async function(next) {
 userSchema.methods.isCorrectPassword = async function (password) {
   return bcrypt.compare(password, this.password);
 }
+
+// remove/hide the password from response after registering
+userSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    delete ret.password;
+    delete report.__v;
+    return ret;
+  },
+});
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
