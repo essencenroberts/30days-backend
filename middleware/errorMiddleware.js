@@ -1,7 +1,7 @@
 // middlware functions to handle errors for the whole app
 
 // notFound error | run this when a request doesn't match any route
-const notFound = (req, res, next) => {
+function notFound(req, res, next) {
   // create error message that includes the wrong url they went to
   const error = new Error(`Not found: ${req.orginalUrl}`);
 
@@ -14,10 +14,10 @@ const notFound = (req, res, next) => {
 
 
 // errorHandler - use to catch every error 
-const errorHandler = (err, req, res, next) => {
+function errorHandler(err, req, res, next) {
 
   // if route already set 404 , if not 200 or 500
-  let statusCode = res.statusCode !=200 ? res.statusCode : 500;
+  let statusCode = res.statusCode !== 200 ? res.statusCode : 500;
 
   let message = err.message;
 
@@ -26,27 +26,6 @@ const errorHandler = (err, req, res, next) => {
     statusCode = 404;
     message = 'resource not found';
   }
-
-
-// split bearer the token out
-  const token = securityHeader.split(' ')[1];
-
-  // check signature and expiration
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // attach users info to request object
-      req.user = decoded;
-
-      next();
-  } catch (error) {
-    return res.status(401).json({
-      message: 'Invalid or expired token.'
-    });
-  }
-
-}
 
 // validationerror - missing required field or data
 
@@ -67,6 +46,6 @@ if (err.code === 11000) {
   // send final error
   res.status(statusCode).json({ message });
 
-
+}
 
 module.exports = { notFound, errorHandler };
