@@ -28,6 +28,26 @@ const errorHandler = (err, req, res, next) => {
   }
 
 
+// split bearer the token out
+  const token = securityHeader.split(' ')[1];
+
+  // check signature and expiration
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      // attach users info to request object
+      req.user = decoded;
+
+      next();
+  } catch (error) {
+    return res.status(401).json({
+      message: 'Invalid or expired token.'
+    });
+  }
+
+}
+
 // validationerror - missing required field or data
 
 if (err.name === 'ValidationError') {
@@ -46,7 +66,7 @@ if (err.code === 11000) {
 
   // send final error
   res.status(statusCode).json({ message });
-}
+
 
 
 module.exports = { notFound, errorHandler };

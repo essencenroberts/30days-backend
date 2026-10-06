@@ -1,58 +1,33 @@
+// Helper functions for authentication and authorization
+  // - sessionToken - creates JWT at register and login
+  // - confirmChallengeOwner: checks a user owns a challenge- confirmPostOwner: checks a user owns a post
 
 //dependencies
   // import JWT Library
 const jwt = require('jsonwebtoken');
 
-const { Challenge, Post } = require('../models');  // look up chalenges or post?
+const { Challenge, Post } = require('../models');  // load chalenges or post?
 
-const expiration = '15m';
+const expiration = '2h';
 
   // make a token for register and login
 function sessionToken(user) {
   const payload = {
     _id: user._id,
     username: user.username,
-    email: user.email
+    email: user.email,
   };
 
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: expiration });
 }
 
 // middleware
-function verifyUserAccess(req, res, next) {
- // look for header
-  const securityHeader = req.headers.authorization;
 
-    // if not header / reject token
-    if (!securityHeader || !securityHeader.startsWith('Bearer ')) {
-      return res.status(401).json({
-        message: 'Access denied. Please log in.'
-      });
-    }
-
-// split bearer the token out
-  const token = securityHeader.split(' ')[1];
-
-  // check signature and expiration
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // attach users info to request object
-      req.user = decoded;
-
-      next();
-  } catch (error) {
-    return res.status(401).json({
-      message: 'Invalid or expired token.'
-    });
-  }
-
-}
  
 
 // check if user ownes challenge
 async function confirmChallengeOwner(challengeId, req, res) {
+  //look up challenge by ID
   const challenge = await Challenge.findById(challengeId);
 
   // if user doesn't own project return null and send error response
@@ -62,7 +37,7 @@ async function confirmChallengeOwner(challengeId, req, res) {
   }
 
   // if user doesn't owns project send errpr respnse
-  if (challenge.user.toString() !== req.user._id) {
+  if (challenge.owner.toString() !== req.user._id) {
     res.status(403).json({ message: 'You do not have permission to manage this challenge.' });
     return null;
   }
@@ -72,21 +47,22 @@ async function confirmChallengeOwner(challengeId, req, res) {
 
 // check if user owns post
 async function confirmPostOwner(postId, req, res) {
-  const post = await Post.findById(postId).populate('challengeId');
+  const post = await Post.findById(postId).populate('challenge');
 
-  //
+  // no post with that ID exists
   if (!post) {
     res.status(404).json({ message: 'Post not found' });
     return null;
   }
 
-  if (!post.challengeId) {
-    res.status(400).json({ message: 'This post has no parent and no associated challenge.' })
+  // post exits but challenged deleted 
+  if (!post.challenge) {
+    res.status(400).json({ message: 'The challenge for this post no longer exists.' })
     return null;
   }
 
   // if user doesn't own return null and send errr
-  if (post.challengeId.user.toString() !== req.user._id) {
+  if (post.challenge.owner.toString() !== req.user._id) {
     res.status(403).json({
       message: 'You are not allowed to access this post.'
     });
@@ -99,4 +75,4 @@ async function confirmPostOwner(postId, req, res) {
 
 
 // exports
-module.exports = { sessionToken, confirmChallengeOwner, confirmPostOwner,verifyUserAccess };
+module.exports = { sessionToken, confirmChallengeOwner, confirmPostOwner };
