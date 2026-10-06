@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: [true, 'Email is required'],
-    trime: true,
+    trim: true,
     match: [/.+@.+\..+/, 'Must use a valid email address'],
   },
 
@@ -31,16 +31,17 @@ const userSchema = new mongoose.Schema({
 );
 
 //pre-save hook to hashpassword
-userSchema.pre('save', async function() {
+userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
   
-    return;
+    return next();
   }
 
   const saltRounds = 10; //
   this.password = await bcrypt.hash(this.password, saltRounds);
+  next();
 
-})
+});
 
 //password checker
 userSchema.methods.isCorrectPassword = async function (password) {

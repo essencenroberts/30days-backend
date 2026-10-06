@@ -4,9 +4,6 @@ const { Types, mongoose } = require('mongoose');
 // define schema for post input fields : include _id: ObjectId, dayNumber, scheduledDate, title, caption, platform, contentType, status, link, postedAt
 
 const postSchema = new mongoose.Schema({ 
-  // _id: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  // },
 
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
