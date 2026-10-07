@@ -2,9 +2,9 @@
 // user accounts: register, login and user profile
 
 // load user model
-const User = require('../models');
+const { User } = require('../models');
 
-const sessionToken = require('../utils/authentication');
+const { sessionToken } = require('../utils/authentication');
 
 // REGISTER POST /api/users/register username, email, password
 async function registerUser (req, res, next) {
