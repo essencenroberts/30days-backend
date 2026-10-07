@@ -26,9 +26,14 @@ app.use(express.json());
 
 
 //routes
-app.get('/api/health', (req, res) => {
-  res.json( '30Days Backend is running!')
-}); //default route test to see if its running -- confirm
+app.get('/', (req,res) => {
+  res.json({ message: '30Days Backend is running!' })
+}
+);
+
+// app.get('/api/health', (req, res) => {
+//   res.json( '30Days Backend is running!')
+// }); //default route test to see if its running -- confirm
 
 // every API route
 app.use('/api', apiRoutes);

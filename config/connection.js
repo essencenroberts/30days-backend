@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
     console.log('Successfully conneted to MongoDB');
     
   } catch (error) {
-    console.error('Databse connection error', error.message);
+    console.error('Database connection error', error.message);
     
     process.exit(1);
   }
