@@ -3,7 +3,7 @@
 // notFound error | run this when a request doesn't match any route
 function notFound(req, res, next) {
   // create error message that includes the wrong url they went to
-  const error = new Error(`Not found: ${req.orginalUrl}`);
+  const error = new Error(`Not found: ${req.originalUrl}`);
 
   // set 404 not found error if url incorret
   res.status(404);

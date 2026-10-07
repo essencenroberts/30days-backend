@@ -59,7 +59,7 @@ const challengeSchema = new mongoose.Schema({
 // virtual field for end date calculations
 challengeSchema.virtual('endDate').get(function () {
   const end = new Date(this.startDate);
-  end.setDate(end.getDate() + this.lengthInDays -1);
+  end.setUTCDate(end.getUTCDate() + this.lengthInDays - 1);
   return end;
 });
 

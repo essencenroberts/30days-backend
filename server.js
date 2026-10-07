@@ -6,6 +6,10 @@ const cors = require('cors');
 const connectDB = require('./config/connection');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
+// all API routes
+const apiRoutes = require('./routes/api');
+
+
 const app = express();
 const PORT = process.env.PORT || 3010;
 
@@ -16,14 +20,9 @@ const PORT = process.env.PORT || 3010;
 //mongoDB connection (database)
 connectDB();
 
-// middleware
+// Global middleware (run on every request)
 app.use(cors());
 app.use(express.json());
-app.use(notFound); // runs when a requested URL doesn't exist
-app.use(errorHandler); // catches every error
-
-
-
 
 
 //routes
@@ -31,14 +30,12 @@ app.get('/api/health', (req, res) => {
   res.json( '30Days Backend is running!')
 }); //default route test to see if its running -- confirm
 
-  // userRoutes
+// every API route
+app.use('/api', apiRoutes);
 
-  // challengeRoutes
-
-  // postRoutes
-
-
-
+// Error handlers
+app.use(notFound); // runs when a requested URL doesn't exist
+app.use(errorHandler); // catches every error
 
 
 
@@ -46,4 +43,4 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port: http://localhost:${PORT}`);
   
-})
+});
