@@ -88,7 +88,7 @@ async function getChallengeById(req, res, next) {
     }).select('dayNumber status');
 
     return res.json({
-      ...challenge.toJSON()
+      ...challenge.toJSON(),
       stats: calculateChallengeStats(challenge, posts, req.query.today),
     });
   } catch (error) {

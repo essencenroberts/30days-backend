@@ -52,7 +52,7 @@ userSchema.methods.isCorrectPassword = async function (password) {
 userSchema.set('toJSON', {
   transform: (doc, ret) => {
     delete ret.password;
-    delete report.__v;
+    delete ret.__v;
     return ret;
   },
 });

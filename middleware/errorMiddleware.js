@@ -15,6 +15,7 @@ function notFound(req, res, next) {
 
 // errorHandler - use to catch every error 
 function errorHandler(err, req, res, next) {
+  console.error(err.stack);
 
   // if route already set 404 , if not 200 or 500
   let statusCode = res.statusCode !== 200 ? res.statusCode : 500;
