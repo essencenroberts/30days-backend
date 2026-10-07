@@ -15,9 +15,9 @@ It lets people:
 ## Links
  | | Link |
 | --- | --- |
-| **Live API** | [ADD MY RENDER WEB SERVICE URL] |
-| **Live app (frontend)** | [ADD MY RENDER STATIC SITE URL] |
-| **Frontend repo** | https://github.com/essencenroberts/30days-frontend |
+| **Live API** | [https://thirtyday-api.onrender.com] |
+| **Live app (frontend)** | [ADD MY SITE URL] |
+| **Frontend repo** | [https://github.com/essencenroberts/30days-frontend] |
 ___
 ## Tools Used
 
