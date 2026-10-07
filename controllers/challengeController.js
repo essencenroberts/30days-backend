@@ -1,18 +1,47 @@
 // list , create, view, update, delete ; protected 
 
-// load import Challenge and Post schema, authentication, and dates
+// load import Challenge and Post schema, authentication, and dates + calculateChallengeStats
 const { Challenge, Post } = require('../models');
 const confirmChallengeOwner = require('../utils/authentication');
 const calculateScheduledDate = require('../utils/dates');
+const { calculateChallengeStats } = require('../utils/challengeStats');
 
 // GET see all challenges /api/challenges private/protected
 async function getChallenges(req, res, next) {
   try {
     
     //find only challenges owned by user
-    const challenges = await Challenge.find({ owner: req.user._id })/scrollTo({ startDate: -1 });
+    const challenges = await Challenge.find({ owner: req.user._id }).sort({ startDate: -1 });
 
-    return res.json(challenges);
+    // get every challenge's ID
+    const challengeIds = challenges.map((challenge) => challenge._id);
+
+    // find post for all challenges
+    const posts = await Post.find({
+      challenge: { $in: challengeIds }
+    }).select('challenge dayNumber status');
+
+    // group post by challenge
+    const postsByChallenge = {};
+    posts.forEach((post) => {
+      const id = post.challenge.toString();
+      if (!postsByChallenge[id]) postsByChallenge[id] = [];
+      postsByChallenge[id].push(post);
+    });
+
+    // build each challenge + stats
+    const challengesWithStats = challenges.map((challenge) => ({
+      ...challenge.toJSON(),
+      stats: calculateChallengeStats(
+        challenge,
+        postsByChallenge[challenge._id.toString()] || [].
+        req.query.today
+      ),
+    }));
+
+
+
+    return res.json(challengesWithStats);
   } catch (error) {
     next(error);
   }
@@ -46,14 +75,22 @@ async function createChallenge(req, res, next) {
   }
 }
 
-// GET see one challenge /api/challenges/:challengedId private
+// GET see one challenge /api/challenges/:challengedId private + with stats
 async function getChallengeById(req, res, next) {
   try {
     // find challenge check owner 
     const challenge = await confirmChallengeOwner(req.params.challengeId, req, res);
     if (!challenge) return;
 
-    return res.json(challenge);
+    // load this challenge's posts for stats
+    const posts = await Post.find({
+      challenge: challenge._id
+    }).select('dayNumber status');
+
+    return res.json({
+      ...challenge.toJSON()
+      stats: calculateChallengeStats(challenge, posts, req.query.today),
+    });
   } catch (error) {
     next(error);
   }
