@@ -2,7 +2,7 @@
 
 // load import Challenge and Post schema, authentication, and dates + calculateChallengeStats
 const { Challenge, Post } = require('../models');
-const confirmChallengeOwner = require('../utils/authentication');
+const { confirmChallengeOwner } = require('../utils/authentication.js');
 const calculateScheduledDate = require('../utils/dates');
 const { calculateChallengeStats } = require('../utils/challengeStats');
 
