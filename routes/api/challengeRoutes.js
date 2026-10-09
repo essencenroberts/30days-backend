@@ -27,6 +27,9 @@ router
   .get(getChallenges) // list challenges 
   .post(createChallenge); // create a challenge
 
+
+router.route('/:challengeId')
+
 router
   .route('/:challengeById')
   .get(getChallengeById) // view one
