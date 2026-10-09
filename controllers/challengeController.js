@@ -34,7 +34,7 @@ async function getChallenges(req, res, next) {
       ...challenge.toJSON(),
       stats: calculateChallengeStats(
         challenge,
-        postsByChallenge[challenge._id.toString()] || [].
+        postsByChallenge[challenge._id.toString()] || [],
         req.query.today
       ),
     }));
