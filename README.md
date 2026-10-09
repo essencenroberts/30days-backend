@@ -16,7 +16,7 @@ It lets people:
  | | Link |
 | --- | --- |
 | **Live API** | [https://thirtyday-api.onrender.com] |
-| **Live app (frontend)** | [ADD MY SITE URL] |
+| **Live app (frontend)** | [https://thirtyday.onrender.com] |
 | **Frontend repo** | [https://github.com/essencenroberts/30days-frontend] |
 ___
 ## Tools Used
