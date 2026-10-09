@@ -1,10 +1,10 @@
 // post inside a challenge routes are protected - check user owns the PARENT challenge
 
-const Post = require('../models');
+const { Post } = require('../models');
 
 const { confirmChallengeOwner, confirmPostOwner } = require('../utils/authentication');
 
-const calculateSchuedledDate = require('../utils/dates');
+const { calculateScheduledDate } = require('../utils/dates');
 
 
 // function for if this post belongs to challenge URL 
@@ -66,7 +66,7 @@ async function getPosts(req, res, next) {
         challenge: challenge._id,
         createdBy: req.user._id,
         dayNumber: Number(dayNumber),
-        scheduledDate: calculateSchuedledDate(challenge.startDate, Number(dayNumber)),
+        scheduledDate: calculateScheduledDate(challenge.startDate, Number(dayNumber)),
         title,
         platform,
         contentType,
@@ -87,7 +87,7 @@ async function getPosts(req, res, next) {
   async function getPostById(req, res, next) {
     try {
       //find post + show challenge + check users owns
-      const post = await confirmPostOwner(req.parans.postId, req, res);
+      const post = await confirmPostOwner(req.params.postId, req, res);
       if (!post) return;
 
       //check  post is in challenge in URL
@@ -124,10 +124,10 @@ async function updatePost(req, res, next) {
         }
 
         post.dayNumber = Number(req.body.dayNumber);
-        post.scheduledDate = calculateSchuedledDate(challenge.startDate, post.dayNumber);
+        post.scheduledDate = calculateScheduledDate(challenge.startDate, post.dayNumber);
       }
 
-      const allowedFields = ['title', 'caption', 'platform', 'contentType', 'status', 'postTime', 'link', 'mediaUrs']
+      const allowedFields = ['title', 'caption', 'platform', 'contentType', 'status', 'postTime', 'link', 'mediaUrls']
 
       allowedFields.forEach((field) => {
         if (req.body[field] !== undefined) {

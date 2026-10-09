@@ -28,10 +28,8 @@ router
   .post(createChallenge); // create a challenge
 
 
-router.route('/:challengeId')
-
 router
-  .route('/:challengeById')
+  .route('/:challengeId')
   .get(getChallengeById) // view one
   .put(updateChallenge) // update
   .delete(deleteChallenge); // delete
